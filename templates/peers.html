@@ -1,0 +1,616 @@
+<html>
+    <!-- Used Google Gemini for a lot of the logic with CSS, JQuery and AJAX. -->
+
+<head>
+
+  <style>
+  /* General Terminal Styling */
+    body {
+        background-color: black;
+        color: #0f0; 
+        font-family: monospace; 
+        padding: 20px; 
+    }
+    
+    /* Table Modifications for Terminal Look */
+    table {
+        width: 95%;
+        border: 1px solid #ce9e1b; /* Add a white border to the table */
+    }
+    
+    th, td {
+        border: 1px solid #ce9e1b; /* Add a white border to each cell */
+        padding: 5px 10px;
+        background-color: transparent;
+    }
+    
+    /* Text Input and Textarea Styling */
+    input[type="text"], textarea {
+        background-color: black; 
+        color: #0f0; 
+        border: 1px solid #ce9e1b; /* Add a white border */
+        padding: 8px; 
+    }
+    
+    /* Button Styling */
+    button {
+        background-color: black;
+        color: #0f0;
+        border: 1px solid #0f0; 
+        padding: 8px 16px;
+    }
+    
+    button:hover {
+        background-color: rgb(72, 87, 72);
+        color: black;
+    }
+    
+    /* Link Styling */
+    a {
+        color: #0f0;
+    }
+    
+    a:visited {
+        color: #0f0;
+    }
+
+    a:hover {
+        color: rgb(72, 87, 72);
+        color: white;
+
+    }
+    
+  </style>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+
+  <p align="center">
+  <h2><a href="/networks">Back to Network List</a></h2>
+  </p>
+
+
+  <!-- Print the network only once. https://stackoverflow.com/questions/37777869/looping-over-a-map-using-range-only-iterate-once -->
+  {{range $index, $element := . }}{{if eq $index 0 -}}
+
+  <p align="center">
+  <h2>Network: {{.Nwid}}</h2>
+  </p>
+  {{end}}{{end -}}
+
+  <p></p>
+
+  Update DHCP Pool (Please use CIDR notation) or select one below. <b>WARNING! Existing routes will be deleted.</b>
+  <form method="GET" action="/updatenetcidr">
+    <input type="text" name="cidr">
+    {{range $index, $element := . }}{{if eq $index 0 -}}
+
+    <input type="hidden" name="nwid" value="{{.Nwid}}">
+    {{end}}{{end -}}
+
+    <button type="submit" value="submit"
+      onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">Submit</button>
+  </form>
+  {{range $index, $element := . }}{{if eq $index 0 -}}
+
+  <script>
+    $(document).ready(function () {
+      $("#div1").load("/getroutes?nwid={{.Nwid}}", function (responseTxt, statusTxt, xhr) {
+
+      });
+    });
+
+    function deleteRoute() {
+      $.ajax({
+        url: "/manageroute",
+        method: "POST",
+        data: {
+          theRoute: route,
+          action: "delete",
+          nwid: "{{.Nwid}}"
+        },
+        success: function (data) {
+          alert("Route deleted successfully.");
+        },
+        error: function (error) {
+          alert("Error deleting route.");
+        }
+      });
+    }
+  </script>
+  {{end}}{{end -}}
+
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range $index, $element := . }}{{if eq $index 0 -}}
+
+      <tr>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=10.187.0.0/8&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">10.187.0.0/8</a></button>
+        </td>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=10.188.0.0/8&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">10.188.0.0/8</a></button>
+        </td>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=10.67.0.0/24&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">10.67.0.0/24</a></button>
+        </td>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=172.16.0.0/24&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">172.16.0.0/24</a></button>
+        </td>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=172.17.0.0/24&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">172.17.0.0/24</a></button>
+        </td>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=172.18.0.0/24&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">172.18.0.0/24</a></button>
+        </td>
+
+      </tr>
+      <tr>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=10.0.123.0/24&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">
+              10.0.123.0/24 </a></button></td>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=10.0.118.0/24&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">
+              10.0.118.0/24 </a></button></td>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=172.20.0.0/16&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">
+              172.20.0.0/16 </a></button></td>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=172.25.0.0/16&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">
+              172.25.0.0/16 </a></button></td>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=192.168.192.0/24&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">192.168.192.0/24</a></button>
+        </td>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=172.28.0.0/24&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">172.28.0.0/24
+            </a></button></td>
+      </tr>
+      <tr>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=172.19.0.0/24&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">172.19.0.0/24</a></button>
+        </td>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=10.0.214.0/16&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">10.0.214.0/16</a></button>
+        </td>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=192.168.170.0/24&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">192.168.170.0/24</a></button>
+        </td>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=10.0.75.0/24&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">10.0.75.0/24</a></button>
+        </td>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=172.17.0.0/16&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">172.17.0.0/16</a></button>
+        </td>
+        <td><button type="submit"><a href="/updatenetcidr?cidr=192.168.99.0/24&nwid={{.Nwid}}"
+              onclick="return confirm('Are you sure you want to update the IP Pool Assignment?\n!!!WARNING! Existing routes will be deleted!!');">192.168.99.0/24</a></button>
+        </td>
+      </tr>
+      {{end}}{{end -}}
+
+    </tbody>
+  </table>
+  <p align="center">
+  <h2>Manage Routes</h2>
+  </p>
+
+  <p></p>
+  {{range $index, $element := . }}{{if eq $index 0 -}}
+
+  <script>
+
+    $(document).ready(function () {
+      // Add Route
+      $('#addRouteForm form').submit(function (event) {
+        event.preventDefault();
+
+        var dest = $(this).find('input[name="dest"]').val();
+        var gw = $(this).find('input[name="gw"]').val();
+
+        $.ajax({
+          type: 'GET',
+          url: '/manageroute',
+          data: { dest: dest, gw: gw, nwid: '{{.Nwid}}', action: 'add' },
+          dataType: 'json',
+          success: function (response) {
+            setTimeout(function () {
+              window.location.reload();
+            }, 2000);
+            // Clear the input fields
+            $('#addRouteForm input[name="dest"]').val('');
+            $('#addRouteForm input[name="gw"]').val('');
+          },
+          error: function () {
+            alert('Error adding route');
+          }
+        });
+      });
+      // Delete Route
+      $('#routeTable').on('click', '.deleteRoute', function () {
+        var row = $(this).closest('tr');
+        var route = row.find('td:nth-child(2)').text();
+
+        // Send AJAX request for deletion
+        $.ajax({
+          type: 'GET',
+          url: '/manageroute',
+          data: { route: route, nwid: '9c2f04149c9bab94', action: 'delete' },
+          success: function () {
+            row.remove();
+          },
+          error: function () {
+            alert('Error deleting route');
+          }
+        });
+      });
+    });
+  </script>
+
+  {{end}}{{end -}}
+
+  <div id="addRouteForm">
+
+    <form method="GET" action="/manageroute">
+
+      Target host or net: <input type="text" name="dest"><br />
+      ZT peer gateway: <input type="text" name="gw">
+
+      {{range $index, $element := . }}{{if eq $index 0 -}}
+
+      <input type="hidden" name="nwid" value="{{.Nwid}}">
+      {{end}}{{end -}}
+
+      <input type="hidden" name="action" value="add">
+
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <p> </p>
+
+
+  <table>
+    <thead>
+      <tr>
+        <th>Manage</th>
+        <th>Route</th>
+      </tr>
+    </thead>
+    <tbody id="routeTable">
+
+      {{range $index, $element := . }}{{if eq $index 0 -}}
+      <tr>
+        <td></td>
+
+        <td>{{.DefaultGW}}</td>
+      </tr>
+      {{end}}{{end -}}
+
+      {{range $index, $element := . }}{{if eq $index 0 -}}
+
+      {{range .NwidRoutes}}
+      <tr>
+        <td><button class="deleteRoute">Delete</button></td>
+
+
+        <td>{{.}}</td>
+      </tr>
+      {{end}}
+      {{end}}{{end -}}
+
+      </form>
+
+    </tbody>
+  </table>
+
+  <p> </p>
+
+  <p align="center" id="peers">
+  <h2>Peers</h2>
+  </p>
+
+      <script>
+
+        // These reload the page.
+        function updatenetcidr() {
+
+          $.ajax({
+            url: "/updatenetcidr",
+            method: "GET",
+            success: function (data) {
+              setTimeout(function () {
+                window.location.reload();
+              }, 2000);
+            },
+
+          });
+
+        }
+
+        function AuthPeer(peer, nwid, checked) {
+
+          $.ajax({
+            url: "/authpeer",
+            method: "POST",
+            data: { peer: peer, nwid: nwid, checked: checked },
+            success: function (response) {
+
+              var row = $('tr[data-peer="' + peer + '"][data-nwid="' + nwid + '"]');
+              var ipCell = row.find('td:nth-child(3)');
+              var notesInput = row.find('.notes-input');
+              var status = checked ? "Online" : "Offline";
+              var noIP = checked ? response.ip : "--";
+
+              console.log(response.status)
+
+              if (response.status === 'Success') {
+
+                console.log(response.status)
+                if (!checked) {
+                  // Empty the notes cell if the peer is not checked.
+                  notesInput.val('');
+
+                }
+                  ipCell.text(response.ip);
+                  notesInput.prop('disabled', !checked);
+
+                  // Success animation
+                  row.css("background-color", "lightgreen");
+                  setTimeout(function () { row.css("background-color", ""); }, 2000);
+
+                  // Update IP cell
+                  row.find('td:nth-child(3)').text(noIP);
+                  // Update status cell
+                  // row.find('td:nth-child(3)').text(status);
+                } else {
+                  // Error animation
+                  row.css("background-color", "#cc6060");
+                  setTimeout(function () { row.css("background-color", ""); }, 2000);
+
+                  alert("Error: " + response.message);
+                }
+              },
+              error: function () {
+                alert("An error occurred while processing the request.");
+              }
+            });
+        }
+
+        // Event listener for checkbox changes within table rows
+        $(document).ready(function () {
+          $('table tbody tr input[type="checkbox"]').change(function () {
+            const $row = $(this).closest('tr');
+            const peer = $row.data('peer');
+            const nwid = $row.data('nwid');
+            const checked = this.checked;
+
+            AuthPeer(peer, nwid, checked);
+          });
+        });
+
+        $(document).ready(function () {
+
+          // Event listener for notes textarea changes (use 'blur' for losing focus)
+          $('table tbody .notes-input').blur(function () {
+            const $textarea = $(this);
+            const peer = $textarea.data('peer');
+            const nwid = $textarea.data('nwid');
+            const notes = $textarea.val();
+
+            $.ajax({
+              url: "/updatenotes",
+              method: "POST",
+              data: {
+                peer: peer,
+                nwid: nwid,
+                notes: notes
+              },
+              dataType: "json",
+              success: function (data) {
+
+                // Handle the response from the server
+                if (data.status === "Success") {
+                  // Update the row to green and remove the background color after 3 seconds
+                  $textarea.closest('tr').css("background-color", "green");
+                  setTimeout(function () {
+                    $textarea.closest('tr').css("background-color", "");
+                  }, 3000);
+                } else {
+                  // Update the row to red and remove the background color after 3 seconds
+                  $textarea.closest('tr').css("background-color", "red");
+                  setTimeout(function () {
+                    $textarea.closest('tr').css("background-color", "");
+                  }, 3000);
+                }
+              },
+              error: function (error) {
+                // Handle the error (Consider adding more specific error handling here)
+                console.error("Error:", error);
+              }
+            });
+          });
+        });
+
+        $(document).ready(function() {
+    function updateIPs() {
+        // Iterate through peerData array
+        for (let data of peerData) {
+            let peerId = data.peer;
+            let nwid = data.nwid;
+            let ipCell = $(`tr[data-peer="${peerId}"] td:eq(2)`); // Select IP cell
+
+            // Skip if IP is already present or "--"
+            if (ipCell.text().trim() && ipCell.text().trim() !== "--") {
+                continue; // Continue to the next item in peerData
+            }
+
+            // AJAX request 
+            $.ajax({
+                url: '/getpeerip',
+                method: 'POST',
+                data: { peer: peerId, nwid: nwid }, 
+                dataType: 'json', 
+                success: function(response) {
+                    let newIp = response.ip || "--"; 
+                    ipCell.text(newIp);
+                },
+                error: function() {
+                    ipCell.text("--");
+                }
+            });
+        }
+    }
+
+    updateIPs();
+    setInterval(updateIPs, 10000); 
+});
+  
+      </script>
+
+<script>
+  var peerData = [
+      {{range .}}
+          { peer: '{{.Peer}}', nwid: '{{.Nwid}}' },
+      {{end}}
+  ];
+  </script>
+<table>
+    <thead>
+      <tr>
+        <th>Peer ID</th>
+        <th>Authorized</th>
+        <th>IP</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .}}
+
+      <tr data-peer="{{.Peer}}" data-nwid="{{.Nwid}}">
+
+        <td>{{.Peer}}</td>
+        <td><input type="checkbox" {{if .Status}}checked{{end}}
+            onclick="AuthPeer('{{.Peer}}', '{{.Nwid}}', this.checked);"></td>
+          <td></td>
+        <td><textarea class="notes-input" data-peer="{{.Peer}}" data-nwid="{{.Nwid}}" {{if not
+            .Status}}disabled="disabled" {{end}}>{{.Notes}}</textarea></td>
+      </tr>
+
+      {{end}}
+    </tbody>
+
+  </table>
+
+  <!-- Loads the Firewall rules for the network when the page loads. -->
+  <script>
+    $(document).ready(function () {
+      loadRules();
+    });
+  </script>
+
+  {{range $index, $element := . }}{{if eq $index 0 -}}
+
+  <script>
+    function loadRules() {
+      $.ajax({
+        url: "/getRules?nwid={{.Nwid}}",
+        cache: false,
+        method: "GET",
+        success: function (data) {
+          $("textarea[name='compileRules']").val(data);
+
+          // Trigger resizing after content load.
+          $("textarea[name='compileRules']").on('input', function () {
+
+            // Adjust height.
+            $(this).css('height', 'auto').height(this.scrollHeight);
+
+          }).trigger('input');
+
+        },
+
+      });
+    }
+
+    $(document).ready(function () {
+      $("#compileRulesForm").submit(function (e) {
+        // Prevent the form from submitting normally.
+        e.preventDefault();
+
+        $.ajax({
+          url: "/compileRules",
+          method: "POST",
+          data: $(this).serialize(),
+          dataType: "json",
+          success: function (data) {
+
+            // Clear previous messages.
+            $("#compile-rules-msg").empty();
+
+            if (data.status === "Success") {
+              $("#compile-rules-msg").html("<div style='background-color: green; color: white; padding: 10px; margin-bottom: 10px;'>" + data.msg + "</div>");
+            // Fade out the message after 3 seconds.
+            $("#compile-rules-msg div").fadeOut(3000);
+            
+          } else {
+          
+            $("#compile-rules-msg").html("<div style='background-color: rgb(160, 22, 22); color: white; padding: 10px; margin-bottom: 10px;'>" + data.msg + "</div>");
+
+     
+            }
+
+          },
+
+        });
+      });
+    });
+
+  </script>
+  {{end}}{{end -}}
+
+  <p align="center" id="FlowRules">
+  <h2>Flow Rules</h2>
+  </p>
+
+  <a href="https://docs.zerotier.com/rules/" target="_blank">ZeroTier Rules Documentation</a>
+  <p align="center"></p>
+
+  <form id="compileRulesForm" action="/compileRules" method="POST">
+    {{range $index, $element := . }}{{if eq $index 0 -}}
+
+    <input type="hidden" name="nwid" value="{{.Nwid}}" />
+
+
+    <div id="compile-rules-msg">
+      {{ if .Msg }}
+      {{ if eq .Msg "Success" }}
+      <div style="background-color: green; color: white; padding: 10px; margin-bottom: 10px;" id="compile-rules-msg">{{
+        .Msg }}</div>
+      {{ else }}
+      <div style="background-color: rgb(204, 96, 96); color: white; padding: 10px; margin-bottom: 10px;">{{ .Msg }}
+      </div>
+      {{ end }}
+      {{ end }}
+
+    </div>
+
+    <button type="submit">Check Rules</button>
+    <br />
+    <div id="compile-rules-msg"></div>
+    <textarea id="rules" name="compileRules" rows="10" cols="90"></textarea>
+
+  </form>
+  {{end}}{{end -}}
+
+</body>
+
+</html>

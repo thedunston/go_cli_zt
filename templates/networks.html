@@ -1,0 +1,177 @@
+	<html><head>
+    
+    <!-- Used Google Gemini for a lot of the logic with CSS, JQuery and AJAX. -->
+
+    
+    <style>
+    /* General Terminal Styling */
+    body {
+        background-color: black;
+        color: #0f0; 
+        font-family: monospace; 
+        padding: 20px; 
+    }
+    
+    /* Table Modifications for Terminal Look */
+    table {
+        width: 95%;
+        border: 1px solid #ce9e1b; /* Add a white border to the table */
+    }
+    
+    th, td {
+        border: 1px solid #ce9e1b; /* Add a white border to each cell */
+        padding: 5px 10px;
+        background-color: transparent;
+    }
+    
+    /* Text Input and Textarea Styling */
+    input[type="text"], textarea {
+        background-color: black; 
+        color: #0f0; 
+        border: 1px solid #ce9e1b; /* Add a white border */
+        padding: 8px; 
+    }
+    
+    /* Button Styling */
+    button {
+        background-color: black;
+        color: #0f0;
+        border: 1px solid #0f0; 
+        padding: 8px 16px;
+    }
+    
+    button:hover {
+        background-color: rgb(72, 87, 72);
+        color: black;
+    }
+    
+    /* Link Styling */
+    a {
+        color: #0f0;
+    }
+    
+    a:visited {
+        color: #0f0;
+    }
+
+    a:hover {
+        color: rgb(72, 87, 72);
+        color: white;
+
+    }
+    </style>
+  
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    
+    </head><tbody>
+
+<table>
+  <thead>
+    <tr>
+      <th>Manage</th>
+      <th>Network ID</th>
+      <th>Name</th>
+      <th>Start IP</th>
+      <th>End IP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <script>
+        $(document).ready(function () {
+
+// Event listener for notes textarea changes (use 'blur' for losing focus)
+$('table tbody .desc-input').blur(function () {
+  const $textarea = $(this);
+  const nwid = $textarea.data('nwid');
+  const desc = $textarea.val();
+
+  $.ajax({
+    url: "/updatenetdesc",
+    method: "POST",
+    data: {
+      nwid: nwid,
+      desc: desc
+    },
+    dataType: "json",
+    success: function (data) {
+
+      // Handle the response from the server
+      if (data.status === "Success") {
+        // Update the row to green and remove the background color after 3 seconds
+        $textarea.closest('tr').css("background-color", "green");
+        setTimeout(function () {
+          $textarea.closest('tr').css("background-color", "");
+        }, 3000);
+      } else {
+        // Update the row to red and remove the background color after 3 seconds
+        $textarea.closest('tr').css("background-color", "red");
+        setTimeout(function () {
+          $textarea.closest('tr').css("background-color", "");
+        }, 3000);
+      }
+    },
+    error: function (error) {
+      // Handle the error (Consider adding more specific error handling here)
+      console.error("Error:", error);
+    }
+  });
+});
+});
+
+
+    </script>
+    {{range .}}
+    <tr>
+      <td><a href="/deletenet?nwid={{.Nwid}}"  onclick="return confirm('Are you sure you want to delete this network?'); deletenet()">Delete</a></td>
+      <td><a href="/getmembers?nwid={{.Nwid}}">{{.Nwid}}</a></td>
+            <td><textarea class="desc-input" data-nwid="{{.Nwid}}" data-desc="{{.Name}}">{{.Name}}</textarea></td> 
+
+      <td>{{.IPRangeStart}}</td>
+      <td>{{.IPRangeEnd}}</td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+
+<p></p>
+
+<script>
+   function deletenet() {
+
+$.ajax({
+    url: "/deletenet", // Update the URL accordingly
+    method: "GET", 
+    success: function(data) {
+      setTimeout(function() {
+window.location.reload();
+}, 2000);            },
+    error: function(error) {
+        // Handle errors (optional)
+    }
+});
+
+}
+
+  function createnet() {
+
+        $.ajax({
+            url: "/createnet", // Update the URL accordingly
+            method: "GET", 
+            success: function(data) {
+              setTimeout(function() {
+  window.location.reload();
+}, 2000);            },
+            error: function(error) {
+                // Handle errors (optional)
+            }
+        });
+ 
+}
+      </script>
+</script>
+<p align="center"><button><a href="/createnet">Create Network</a></button></p>
+
+</body>
+
+</html>
