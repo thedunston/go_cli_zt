@@ -6,14 +6,12 @@ Status: Actively Supported.
 This program is used to manage a self-hosted ZeroTier controller.
 
 ## Motivation
-This is an update to the original program I wrote https://github.com/thedunston/bash_cli_zt. After I receoved from my doctoral dissertation, it was time to start working on bash_cli_zt again. However, I decided to switch to using Go.
+This is an update to the original program I wrote https://github.com/thedunston/bash_cli_zt. After I recovered from my doctoral dissertation, it was time to start working on bash_cli_zt again. However, I decided to switch to using Go.
 
 The primary motivation for the switch to Go is to provide a CLI on multiple platforms and not having to manage multiple code bases. Initially, I was working on a ZT controller using PowerShell, but switched to Go for simpler maintenance on my end.
 
 ## One change from bash_cli_zt
-One major change is that the "node.js" program is required to create Flow Rules. I decided not to try and recreate what the ZeroTier creator Adam Ierymenko has already developed. You'll need to download the static binary from: https://nodejs.org/download/nightly/
-
-for your OS and then copy the 'node' program to the 'rules-compiler' folder once you clone this repo. On my tests with Windows and Linux, only the node.exe (windows) or the 'node' binary was required and not all the other files when using one of the static binaries.
+One major change is that the "node.js" program is required to create Flow Rules. I decided not to try and recreate what the ZeroTier creator Adam Ierymenko has already developed. You'll need to download the static binary from: https://nodejs.org/download/nightly/ for your OS and then copy the 'node' program to the 'rules-compiler' folder once you clone this repo. On my tests with Windows and Linux, only the node.exe (windows) or the 'node' binary was required and not all the other files when using one of the static binaries.
 
 **NOTE: On Windows, Windows Defender complained about the program because it does use system calls to clear the screen and execute the 'node.exe' program.**
 
@@ -30,7 +28,7 @@ Listens on:  `http://localhost:4444`
 ### Main Network Screen
 ![go_cli_zt_web](https://github.com/thedunston/go_cli_zt/assets/43048165/fe3c87ca-7977-44b3-87e9-d26e884d829c)
 
-## Network Details Screen
+### Network Details Screen
 ![go_cli_zt_web2](https://github.com/thedunston/go_cli_zt/assets/43048165/f22f2320-6968-4302-a800-57732db13109)
 
 ## Download node.js for your distro.
@@ -72,8 +70,11 @@ rule-compiler
 ```
 git clone http://github.com/thedunston/go_cli_zt
 cd go_cli_zt
+go mod init gclizt
+go mod tidy
+go build ztNetworks.go
 chmod +x ztNetworks
-sudo ./ztNetworks
+sudo ./ztNetworks  (or sudo ./ztNetwork -web)
 ```
 
 `sudo` is required in order to view the ZeroTier Secrets file to query and POST to the controller.
@@ -85,8 +86,11 @@ You'll need to run go_cli_zt as the user who installed ZeroTier. The secrets fil
 ```
 git clone http://github.com/thedunston/go_cli_zt
 cd go_cli_zt
-.\ztNetworks.exe -cli
-(or double-click on the ztNetworks.exe executable)
+go mod init gclizt
+go mod tidy
+go build ztNetworks.go
+.\ztNetworks.exe -cli (or .\ztNetwork -web)
+(or double-click on the ztNetworks.exe executable for the web)
 ```
 **REMINDER: Windows Defender may alert because system calls are made from the program.**
 
