@@ -70,7 +70,7 @@ rule-compiler
 ```
 git clone http://github.com/thedunston/go_cli_zt
 cd go_cli_zt
-go mod init gclizt
+go mod init goztcli
 go mod tidy
 go build ztNetworks.go
 chmod +x ztNetworks
@@ -86,7 +86,7 @@ You'll need to run go_cli_zt as the user who installed ZeroTier. The secrets fil
 ```
 git clone http://github.com/thedunston/go_cli_zt
 cd go_cli_zt
-go mod init gclizt
+go mod init goztcli
 go mod tidy
 go build ztNetworks.go
 .\ztNetworks.exe -cli (or .\ztNetwork -web)
